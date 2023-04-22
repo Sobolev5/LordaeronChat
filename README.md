@@ -12,7 +12,7 @@ Microservice `interface` render chat interface
 and open websocket channel for new chat messages.  
 
 Microservice `bot` await messages from `interface`
-and ask to `interface` via next chain:
+and ask to `interface` via next chain:  
 `rabbitmq -> proxy function on *interface* -> websocket`  
 
 
