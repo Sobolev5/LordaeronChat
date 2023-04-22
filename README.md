@@ -6,6 +6,8 @@ https://github.com/Sobolev5/carrot-rpc
 See live here:
 http://89.108.77.63:1025
 
+![](https://github.com/Sobolev5/LordaeronChat/blob/master/lordaeron.jpg)
+
 
 # Scheme
 Microservice `interface` render chat interface 
