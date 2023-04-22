@@ -1,7 +1,7 @@
 # Lordaeron chat
-This is example of work:
-https://github.com/Sobolev5/channel-box
-https://github.com/Sobolev5/carrot-rpc
+This is example of work:  
+https://github.com/Sobolev5/channel-box  
+https://github.com/Sobolev5/carrot-rpc  
 
 See live here:
 http://89.108.77.63:1025
