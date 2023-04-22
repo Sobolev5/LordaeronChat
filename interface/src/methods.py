@@ -38,7 +38,7 @@ async def main(request):
 
             return JSONResponse({"200": "OK"})
 
-    messages = await conn.fetch('SELECT * FROM messages LIMIT 4')
+    messages = await conn.fetch('SELECT * FROM messages LIMIT 4 ORDER BY ID DESC')
     await conn.close()
     return templates.TemplateResponse('app.html', {'request': request, "room_name": room_name, "messages": messages})
 
