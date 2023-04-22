@@ -6,7 +6,7 @@ https://github.com/Sobolev5/carrot-rpc
 See live here:
 http://89.108.77.63:1025
 
-![](https://github.com/Sobolev5/LordaeronChat/blob/master/lordaeron.jpg)
+![](https://github.com/Sobolev5/LordaeronChat/blob/master/screenshot.jpg)
 
 
 # Scheme
