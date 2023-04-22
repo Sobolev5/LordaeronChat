@@ -1,0 +1,84 @@
+version: '3.2'
+
+services:
+
+  chat-postgres:
+    container_name: chat-postgres
+    env_file: .env
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB:-chat-db}
+      PGDATA: /data/pgdata
+    volumes:
+      - chat-db-volume:/data/pgdata
+    expose:
+      - "5432" 
+    restart: unless-stopped
+    networks:
+      - chat-network
+
+  chat-rabbitmq:
+    container_name: chat-rabbitmq
+    env_file: .env
+    image: 'rabbitmq:3.11.13-management'
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-admin}
+      RABBITMQ_DEFAULT_VHOST: vhost
+    expose:
+      - "5672" 
+    volumes:
+      - chat-rabbitmq-volume:/var/lib/rabbitmq/mnesia/
+    restart: unless-stopped
+    networks:
+      - chat-network 
+
+  chat-interface:
+    container_name: chat-interface
+    env_file: .env
+    build: 
+      context: ./interface/
+      dockerfile: Dockerfile 
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB:-chat-db}
+      POSTGRES_HOST: ${POSTGRES_HOST:-chat-postgres}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      AMQP_URI: ${AMQP_URI:-amqp://admin:admin@chat-rabbitmq:5672/vhost}
+    ports:
+      - "1025:1025"
+    expose:
+      - "1025"
+    depends_on: 
+      - chat-postgres
+      - chat-rabbitmq
+    restart: unless-stopped
+    networks:
+      - chat-network
+
+  chat-bot:
+    container_name: chat-bot
+    env_file: .env
+    build: 
+      context: ./bot/
+      dockerfile: Dockerfile 
+    environment:
+      AMQP_URI: ${AMQP_URI:-amqp://admin:admin@chat-rabbitmq:5672/vhost}
+    depends_on: 
+      - chat-postgres
+      - chat-rabbitmq
+    restart: unless-stopped
+    networks:
+      - chat-network
+
+networks:
+  chat-network:
+    driver: bridge
+  
+volumes:
+  chat-db-volume:
+  chat-rabbitmq-volume:
+  

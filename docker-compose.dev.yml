@@ -1,0 +1,21 @@
+version: '3.2'
+
+services:
+
+  chat-postgres:
+    ports:
+      - '5433:5432'  
+
+  chat-rabbitmq:
+    ports:
+      - '15673:15672'   
+
+  chat-interface:
+    entrypoint: uvicorn app:app --reload --host 0.0.0.0 --port 1025
+    volumes:
+      - ./interface:/interface
+
+  chat-bot:
+    entrypoint: uvicorn app:app --reload --host 0.0.0.0 
+    volumes:
+      - ./bot:/bot

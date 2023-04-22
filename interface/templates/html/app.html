@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <title>Lordaeron lands</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    </head>
+    <body style="background-image: url('{{ url_for('static', path='/img/background.jpg') }}'); background-size: cover; background-repeat: no-repeat;">      
+        <div class="col-lg-8 mx-auto p-4 py-md-5 mt-4 rounded" style="background-color: #fff;">
+            <header>
+                <h1>Lordaeron lands</h1>    
+                <p class="fs-5 col-md-8">{% if room_name %}{{ room_name }}{% else %}Eastern Kingdoms{% endif %}</p>
+                <hr class="col-3 col-md-2 mb-5">
+            </header>
+            <main class="row g-5 rounded">
+                <div class="col-md-6 chat-messages" id="chat-messages">   
+                    {% for message in messages %}      
+                    <div class="row mb-2 chat-message">  
+                        <div class="col-2">
+                            <img class="img-fluid" src="{{ url_for('static', path='/wc3_heroes/6.jpg') }}"/>
+                        </div>
+                        <div class="col-4">
+                            <b class="message-author">{{ message.author }}:</b>
+                            <div class="message-text">{{ message.text }}</div> 
+                            <div class="message-date">{{ message.creation_date }}</div> 
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <form action="" method="POST" id="message-form">           
+                        <div class="mb-3 ">
+                            <label class="form-label">Warrior</label>
+                            <input type="text" class="form-control" name="author" value="Footman" id="author">
+                            <br>                            
+                            <label class="form-label">Message</label>
+                            <input type="text" class="form-control" name="text" value="Ready for action" id="text">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                <div>
+                    <figure class="text-end">
+                        <blockquote class="blockquote">
+                          <p> Lordaeron is the northernmost continent of the Eastern Kingdoms.</p>
+                        </blockquote>
+                        <figcaption class="blockquote-footer">
+                            The land is 
+                            <cite title="Source Title">
+                                rugged and largely mountainous
+                            </cite>
+                        </figcaption>
+                      </figure>   
+                </div>
+            </main>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script> 
+        <script>
+            var host = window.location.host; 
+            var path = window.location.pathname
+            var ws = new WebSocket(`ws://${host}/room_channel?channel_name={{ room_name }}`); 
+            ws.onopen = function(event) {
+                console.log('Connected to websocket. Channel {{ room_name }} is open for connections now.')
+            };
+            ws.onmessage = function(event) {  
+                var messages = document.getElementById('chat-messages');
+                var message = document.createElement('div');
+                var data = JSON.parse(event.data);
+                console.log('Message received %s', data)
+                message.innerHTML = `
+                    <div class="row mb-2 chat-message">  
+                        <div class="col-2">
+                            <img class="img-fluid" src="http://${host}/static/wc3_heroes/${data.avatar}.jpg"/>
+                        </div>
+                        <div class="col-4">
+                            <b class="message-author">${data.author}:</b>
+                            <div class="message-text">${data.text}</div> 
+                        </div>
+                    </div>                
+                `;
+                messages.appendChild(message);
+            };
+
+            $("#message-form").submit(function (event) {
+                event.preventDefault();
+                $.post(path, $("#message-form").serialize())
+            })
+        </script>
+    </body>
+</html>

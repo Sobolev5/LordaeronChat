@@ -1,0 +1,19 @@
+import os
+import sys
+import asyncio
+
+path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, "%s" % path)
+sys.path.insert(0, "%s/transport_amqp" % path)
+sys.path.insert(0, "%s/transport_http" % path)
+sys.path.insert(0, "%s/tests" % path)
+
+module_name = sys.argv[1]
+argv = " ".join(sys.argv[2:])
+
+if argv[-1] != ")":
+    argv += "()"
+
+exec("import %s" % module_name)
+exec(f"asyncio.get_event_loop().run_until_complete({module_name}.{argv})")
+
