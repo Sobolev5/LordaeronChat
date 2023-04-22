@@ -19,7 +19,7 @@ async def bot_talk(incoming_dict: dict) -> dict:
     time.sleep(2)
     outcoming_dict = {}
     outcoming_dict["author"] = "Answer from Bot"
-    outcoming_dict["text"] = "Bloog Gives me power"
+    outcoming_dict["text"] = "Blood Gives me power"
     if incoming_dict["author"] == "Orc":
         outcoming_dict["text"] = "Go away from Lordaeron!"    
 
