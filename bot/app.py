@@ -21,7 +21,7 @@ async def bot_talk(incoming_dict: dict) -> dict:
     outcoming_dict["author"] = "Answer from Bot"
     outcoming_dict["text"] = "Bloog Gives me power"
     if incoming_dict["author"] == "Orc":
-        reply_dict["text"] = "Go away from Lordaeron!"    
+        outcoming_dict["text"] = "Go away from Lordaeron!"    
 
     return outcoming_dict
 

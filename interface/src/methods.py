@@ -14,8 +14,16 @@ from settings import AMQP_URI
 async def call_bot(author, text, channel_name):
     carrot = await CarrotCall(AMQP_URI).connect()
     res = await carrot.call({"author": author, "text": text}, "bot:talk", timeout=5)  
-    await channel_box.channel_send(channel_name="main", payload={"avatar": 5, **res})    
-
+    await channel_box.channel_send(channel_name="main", payload={"avatar": "5", **res})  
+    conn = await asyncpg.connect(POSTGRES_URI)
+    await conn.execute('INSERT INTO messages(author, text, avatar, creation_date) VALUES($1, $2, $3, $4)', 
+        res["author"],
+        res["text"],
+        "5",
+        datetime.datetime.now().date()        
+    )
+    await conn.close()
+      
 
 async def main(request):
     conn = await asyncpg.connect(POSTGRES_URI)
@@ -25,13 +33,13 @@ async def main(request):
             author = form["author"]    
             text = form["text"]  
 
-            await channel_box.channel_send(channel_name=room_name, payload={"author": author, "text": text, "avatar": 6} )               
-            time.sleep(2)
+            await channel_box.channel_send(channel_name=room_name, payload={"author": author, "text": text, "avatar": "6"} )               
             await call_bot(author, text, room_name)
             
-            await conn.execute('INSERT INTO messages(author, text, creation_date) VALUES($1, $2, $3)', 
+            await conn.execute('INSERT INTO messages(author, text, avatar, creation_date) VALUES($1, $2, $3, $4)', 
                 author,
                 text,
+                "6",
                 datetime.datetime.now().date()        
             )
             sprint(f"Message {author} {text} added -> success", c="green")

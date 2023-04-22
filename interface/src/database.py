@@ -14,6 +14,7 @@ async def db_init():
             id serial PRIMARY KEY,
             author text,
             text text,
+            avatar char(1), 
             creation_date date
         )
     ''')

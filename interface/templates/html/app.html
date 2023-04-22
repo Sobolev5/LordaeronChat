@@ -19,12 +19,11 @@
                     {% for message in messages %}      
                     <div class="row mb-2 chat-message">  
                         <div class="col-2">
-                            <img class="img-fluid" src="{{ url_for('static', path='/wc3_heroes/6.jpg') }}"/>
+                            <img class="img-fluid" src="{{ url_for('static', path='/wc3_heroes/' + message.avatar + '.jpg') }}"/>
                         </div>
                         <div class="col-4">
                             <b class="message-author">{{ message.author }}:</b>
                             <div class="message-text">{{ message.text }}</div> 
-                            <div class="message-date">{{ message.creation_date }}</div> 
                         </div>
                     </div>
                     {% endfor %}
